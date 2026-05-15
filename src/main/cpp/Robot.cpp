@@ -1,77 +1,42 @@
-// Open Source Software; you can modify and/or share it under the terms of
- 
-// the WPILib BSD license file in the root directory of this project.
- 
- 
-#include <frc/TimedRobot.h>
- 
-#include <frc/XboxController.h>
- 
-#include <frc/drive/DifferentialDrive.h>
- 
-#include <CANVenom.h>
+#include "Robot.h"
 
-#include <iostream>
- 
- 
-/**
- 
-* This is a demo program showing the use of the DifferentialDrive class.
- 
-* Runs the motors with tank steering and an Xbox controller.
- 
-*/
- 
-class Robot : public frc::TimedRobot {
- 
-pwf::CANVenom m_leftMotor{1};
- 
-pwf::CANVenom m_rightMotor{2};
- 
-frc::XboxController m_driverController{0};
- 
-frc::DifferentialDrive m_robotDrive{
-    m_leftMotor, m_rightMotor
-};
- 
-public:
- 
-Robot() {
- 
-wpi::SendableRegistry::AddChild(&m_robotDrive, &m_leftMotor);
-
-wpi::SendableRegistry::AddChild(&m_robotDrive, &m_rightMotor);
- 
- 
-// We need to invert one side of the drivetrain so that positive voltages
- 
-// result in both sides moving forward. Depending on how your robot's
- 
-// gearbox is constructed, you might have to invert the left side instead.
- 
-m_rightMotor.SetInverted(true);
- 
+void Robot::RobotInit(){
+  m_base.robot_init();
 }
- 
- 
-void TeleopPeriodic() override {
- 
-// Drive with tank style
- 
-m_robotDrive.TankDrive(-m_driverController.GetLeftY(), -m_driverController.GetRightY());
 
-std::cout << m_driverController.GetLeftY() << "---------" << m_driverController.GetRightY() << std::endl;
+void Robot::RobotPeriodic(){
 }
- 
-};
- 
- 
+
+void Robot::TeleopInit() {
+  
+}
+
+void Robot::TeleopPeriodic(){
+  m_base.teleop_periodic();
+}
+
+void Robot::DisabledInit() {
+
+}
+
+void Robot::DisabledPeriodic() {
+
+}
+
+void Robot::AutonomousInit() {
+}
+
+
+void Robot::AutonomousPeriodic() {
+}
+
+
+
+
+
 #ifndef RUNNING_FRC_TESTS
- 
-int main() {
- 
-return frc::StartRobot<Robot>();
- 
+int main()
+{
+  return frc::StartRobot<Robot>();
 }
- 
 #endif
