@@ -7,7 +7,7 @@ void Base::RobotInit() {
 }
 
 void Base::TeleopPeriodic() {
-    double vitesse  = -m_driverController.GetLeftY();
+    double vitesse  =  m_driverController.GetLeftY();
     double rotation =  m_driverController.GetRightX();
 
     if (std::abs(vitesse)  < 0.1) vitesse  = 0;
