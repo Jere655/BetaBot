@@ -1,27 +1,22 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
-#include <iostream>
-
-#include <Base.h>
-
+#include "Base.h"
 
 class Robot : public frc::TimedRobot {
-    public:
-        void RobotInit();         //Le code dans robot init va rouller unt foie quand le robot est ouvert
-        void RobotPeriodic();     //Le code dans robot periodic va roulleren permenance quand le robot est ouvert
+public:
+    void RobotInit();          // Roule une fois à l'ouverture du robot
+    void RobotPeriodic();      // Roule en permanence
 
-        void DisabledInit();      //Le code dans robot init va rouller unt foie quand le robot est mis a disable
-        void DisabledPeriodic();  //Le code dans robot periodic va rouller en permenance que le robot est diable
+    void DisabledInit();       // Roule une fois quand mis en disabled
+    void DisabledPeriodic();   // Roule en permanence en disabled
 
-        void TeleopInit();         //Le code dans robot init va rouller unt foie quand le robot est mis a teleop
-        void TeleopPeriodic();     //Le code dans robot periodic va rouller en permenance que le robot est teleop
-        
-        void AutonomousInit();     //Le code dans robot init va rouller unt foie quand le robot est mis a autonomous
-        void AutonomousPeriodic(); //Le code dans robot periodic va rouller en permenance que le robot est autonomous
+    void TeleopInit();         // Roule une fois quand mis en teleop
+    void TeleopPeriodic();     // Roule en permanence en teleop
 
-        //il exist aussi test init et test periodic
-    protected:
-    private:
-        base m_base;
+    void AutonomousInit();     // Roule une fois quand mis en autonomous
+    void AutonomousPeriodic(); // Roule en permanence en autonomous
+
+private:
+    Base m_base;
 };
