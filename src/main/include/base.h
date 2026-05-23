@@ -6,6 +6,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/PneumaticsModuleType.h>
 #include <frc/Compressor.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/SparkMax.h>
 
 class Base {
