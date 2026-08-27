@@ -8,11 +8,14 @@
 #include <frc/Compressor.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/SparkMax.h>
+#include "Vision.h"
 
 class Base {
 public:
     void RobotInit();
     void TeleopPeriodic();
+    void AutonomousInit();
+    void AutonomousPeriodic();
 
 private:
     pwf::CANVenom m_leftMotor{1};
@@ -32,4 +35,37 @@ private:
     int  m_etatIntake = 0;
     bool m_aPrecedent = false;
     bool m_bPrecedent = false;
+
+    Vision m_vision;
+
+    // --- Odométrie ---
+    double m_prevLeftPos = 0.0;
+    double m_prevRightPos = 0.0;
+    double m_heading = 0.0;
+
+    // --- Machine d'état autonome ---
+    enum class AutoState {
+        SEARCH,
+        APPROACH,
+        ALIGN_BACK,
+        REVERSE_COLLECT,
+        COLLECTING,
+        RETURN_SEARCH,
+        OBSTACLE_AVOID
+    };
+    AutoState m_autoState = AutoState::SEARCH;
+    double m_autoTimer = 0.0;
+    double m_searchDirection = 1.0;
+    double m_collectionHeading = 0.0;
+    double m_ballLostTimer = 0.0;
+
+    void AutoUpdateOdometry();
+    bool AutoBallDetected() const;
+    double AutoBallCenterX() const;
+    double AutoBallArea() const;
+    void AutoDrive(double speed, double rotation);
+    void AutoLowerIntake();
+    void AutoRaiseIntake();
+    void AutoRunIntakeRoller(double speed);
+    void AutoStopIntake();
 };

@@ -12,13 +12,17 @@ void Robot::TeleopPeriodic() {
     m_base.TeleopPeriodic();
 }
 
+void Robot::AutonomousInit() {
+    m_base.AutonomousInit();
+}
+
+void Robot::AutonomousPeriodic() {
+    m_base.AutonomousPeriodic();
+}
+
 void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
-
-void Robot::AutonomousInit() {}
-
-void Robot::AutonomousPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
