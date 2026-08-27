@@ -1,8 +1,8 @@
 #include "Vision.h"
 
 Vision::Vision()
-    : m_camera("usbcam", 0),
-      m_cvSink(m_camera.GetVideo()),
+    : m_camera(frc::CameraServer::StartAutomaticCapture("usbcam", 0)),
+      m_cvSink(frc::CameraServer::GetVideo(m_camera)),
       m_output(frc::CameraServer::PutVideo("Vision", 320, 240)) {
     m_camera.SetResolution(320, 240);
     m_camera.SetFPS(20);

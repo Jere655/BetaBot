@@ -4,7 +4,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include <cscore.h>
-#include <frc/CameraServer.h>
+#include <cameraserver/CameraServer.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // Pipeline de vision : capture la caméra USB du roboRIO et détecte des objets
