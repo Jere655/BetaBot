@@ -47,6 +47,7 @@ private:
     enum class AutoState {
         SEARCH,
         APPROACH,
+        DEPLOY_INTAKE,
         ALIGN_BACK,
         REVERSE_COLLECT,
         COLLECTING,

@@ -176,8 +176,29 @@ void Base::AutonomousPeriodic() {
         case AutoState::APPROACH: {
             AutoDrive(0.0, 0.0);
             m_collectionHeading = m_heading;
-            m_autoState = AutoState::ALIGN_BACK;
+            m_intakeLeve = true;
+            m_xPrecedent = false;
+            m_intake.Set(frc::DoubleSolenoid::Value::kForward);
+            m_autoState = AutoState::DEPLOY_INTAKE;
             m_autoTimer = 0.0;
+            break;
+        }
+
+        case AutoState::DEPLOY_INTAKE: {
+            AutoDrive(0.0, 0.0);
+            m_autoTimer += 0.02;
+
+            bool deploye = m_intakeLeve;
+            if (!deploye && m_autoTimer > 0.5) {
+                m_intakeLeve = true;
+                m_intake.Set(frc::DoubleSolenoid::Value::kForward);
+            }
+
+            if (m_autoTimer > 1.0) {
+                m_autoState = AutoState::ALIGN_BACK;
+                m_autoTimer = 0.0;
+                m_ballLostTimer = 0.0;
+            }
             break;
         }
 
@@ -287,6 +308,11 @@ void Base::AutonomousPeriodic() {
 
         case AutoState::RETURN_SEARCH: {
             m_autoTimer += 0.02;
+
+            if (m_autoTimer < 0.3) {
+                m_intakeLeve = false;
+                m_intake.Set(frc::DoubleSolenoid::Value::kReverse);
+            }
 
             double headingError = m_collectionHeading - m_heading;
             while (headingError > kPi) headingError -= 2.0 * kPi;
