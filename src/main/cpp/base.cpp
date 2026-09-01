@@ -82,15 +82,48 @@ void Base::TeleopPeriodic() {
     bool aTerre   = pos <= kTolPos;                             // intake au sol (ramassage)
     bool aHauteur = pos >= (kHauteurHaut - kTolPos);            // intake en hauteur (tir)
 
-    // Détection des appuis (front montant) sur A (monter) / B (descendre)
+    // Détection des appuis (front montant) sur A / B
     bool aAppui = m_driverController.GetAButton() && !m_aPrecedent;
     bool bAppui = m_driverController.GetBButton() && !m_bPrecedent;
     m_aPrecedent = m_driverController.GetAButton();
     m_bPrecedent = m_driverController.GetBButton();
 
-    // 1 appui = déclenche le mouvement automatique (sans maintenir)
-    if (aAppui && !aHauteur) m_etatIntake = 1;   // monter
-    if (bAppui && !aTerre)   m_etatIntake = 2;   // descendre
+    // --- DEBUG INTAKE ---
+    bool xAppuye = m_driverController.GetXButton();
+    if (xAppuye && !m_xPrecedent) {
+        printf("[INTAKE DEBUG] X PRESSED\n");
+        printf("[INTAKE DEBUG] X action: RETRACT (kReverse) -> intake monte/rentre\n");
+        printf("[INTAKE DEBUG] solenoid module=3 channels=0/1 type=CTREPCM\n");
+    }
+    if (aAppui) {
+        printf("[INTAKE DEBUG] A PRESSED\n");
+        printf("[INTAKE DEBUG] A action: DEPLOY (kForward) -> intake descend/sort\n");
+        printf("[INTAKE DEBUG] solenoid module=3 channels=0/1 type=CTREPCM\n");
+    }
+    if (bAppui) {
+        printf("[INTAKE DEBUG] B PRESSED\n");
+        printf("[INTAKE DEBUG] B action: motor lift UP (m_etatIntake=1)\n");
+        printf("[INTAKE DEBUG] aHauteur=%d pos=%.2f\n", aHauteur, pos);
+    }
+    m_xPrecedent = xAppuye;
+
+    // X = RÉTRACTER (monter/rentre)  ---  pneumatique direct
+    // A = DÉPLOIER (descendre/sort) --- pneumatique direct
+    if (xAppuye && !m_xPrecedent) {
+        m_intake.Set(frc::DoubleSolenoid::Value::kReverse);  // RÉTRACTE
+    }
+    if (aAppui) {
+        m_intake.Set(frc::DoubleSolenoid::Value::kForward);  // DÉPLOIE
+    }
+
+    // B = monter moteur (lift fin vers le haut)
+    bool yAppui = m_driverController.GetYButton() && !m_yPrecedent;
+    if (yAppui) {
+        m_etatIntake = 2;
+        printf("[INTAKE DEBUG] Y PRESSED -> lift fine DOWN\n");
+    }
+    m_yPrecedent = m_driverController.GetYButton();
+    if (bAppui && !aHauteur) m_etatIntake = 1;   // monter
 
     // Le moteur fait SOIT le levage progressif, SOIT le rouleau (jamais en même temps)
     double cmd = 0.0;
@@ -107,14 +140,14 @@ void Base::TeleopPeriodic() {
     }
     m_intakeMotor.Set(cmd);
 
-    // --- Déploiement pneumatique (toggle X) ---
-    bool xAppuye = m_driverController.GetXButton();
-    if (xAppuye && !m_xPrecedent) {
-        m_intakeLeve = !m_intakeLeve;
+    // --- DEBUG : moteur intake ---
+    if (cmd != 0.0 || m_etatIntake != 0) {
+        printf("[INTAKE DEBUG] motor output=%.3f state=%d cmd=%.3f\n",
+               m_intakeMotor.Get(), m_etatIntake, cmd);
     }
-    m_xPrecedent = xAppuye;
-    m_intake.Set(m_intakeLeve ? frc::DoubleSolenoid::Value::kForward
-                              : frc::DoubleSolenoid::Value::kReverse);
+
+    // Mise à jour m_xPrecedent pour X (déjà fait plus haut via xAppuye)
+    // NOTE: m_xPrecedent n'est plus utilisé pour toggle, X est maintenant momentané direct kReverse
 
     // Affichage des valeurs actives sur le dashboard
     frc::SmartDashboard::PutNumber("Vitesse Base active (%)",   limiteBase   * 100.0);

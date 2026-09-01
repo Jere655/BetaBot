@@ -35,6 +35,7 @@ private:
     int  m_etatIntake = 0;
     bool m_aPrecedent = false;
     bool m_bPrecedent = false;
+    bool m_yPrecedent = false;
 
     Vision m_vision;
 
